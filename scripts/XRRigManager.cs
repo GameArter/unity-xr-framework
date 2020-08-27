@@ -230,7 +230,7 @@ namespace GameArter.XR
                                 teleportCircle.gameObject.transform.rotation = Quaternion.AngleAxis(angle, Vector3.up);
                             }
                         }
-                        motionRam.teleportation = isActivated;
+                        c.teleportation.isActive = isActivated;
                         c.teleportation.rayInteractor.SetActive(isActivated);
                     }
                     break;
@@ -265,7 +265,7 @@ namespace GameArter.XR
 
         private void FixedUpdate()
         {
-            if (!motionRam.teleportation)
+            if (!xrUser.gravitation.active || (!rightController.teleportation.isActive && !leftController.teleportation.isActive))
             {
                 if (climbingRam.climbingHand)
                 {
@@ -284,7 +284,9 @@ namespace GameArter.XR
                     }
 
                     if (xrUser.gravitation.active) ApplyGravity();
-                } 
+                }
+            } else {
+                Debug.Log("Motion Ram is teleportation");
             }            
         }
 
@@ -391,13 +393,13 @@ namespace GameArter.XR
                 public GameObject rayInteractor = null;
                 internal XRController xrController = null;
                 internal float activeThreshold = 0.2f; // visibility manager
+                internal bool isActive;
             }
         }
 
         [System.Serializable]
         private class MotionRam
         {
-            public bool teleportation = false;
             public bool continuousMovement = false;
             public HandControllerSetup.ContinuousMovement activeContinuousMovement = new HandControllerSetup.ContinuousMovement();
             public Vector2 continuousInputAxis = Vector2.zero;
